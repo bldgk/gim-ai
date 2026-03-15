@@ -1,5 +1,7 @@
 # GameIntoMusic — AI Music Generator
 
+> Originally written in Theano back in 2017, ported to PyTorch in 2026 because Theano died and wouldn't run on Apple Silicon. Generates something between music and auditory schizophrenia, depending on training time and your tolerance.
+
 Deep learning model that generates music by learning temporal patterns from MIDI files.
 
 ## How it works

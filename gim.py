@@ -10,7 +10,7 @@ import sys
 import numpy as np
 import torch
 from midi.utils import midiread, midiwrite
-from model import LstmRbm, RnnRbm
+from model import LstmRbm, RnnRbm, RnnDbn, LstmDbn
 from player import play_realtime
 
 CHECKPOINTS_DIR = 'checkpoints'
@@ -134,9 +134,15 @@ if __name__ == '__main__':
     device = get_device()
     print(f'Device: {device}')
 
-    models = {'lstm': LstmRbm, 'rnn': RnnRbm}
-    choice = input('Model [lstm/rnn]: ').strip().lower() or 'lstm'
-    ModelClass = models.get(choice, LstmRbm)
+    models = {
+        'rnn':      ('RNN-RBM',  RnnRbm),
+        'lstm':     ('LSTM-RBM', LstmRbm),
+        'rnn-dbn':  ('RNN-DBN',  RnnDbn),
+        'lstm-dbn': ('LSTM-DBN', LstmDbn),
+    }
+    print('  Models: rnn, lstm, rnn-dbn, lstm-dbn')
+    choice = input('Model [lstm]: ').strip().lower() or 'lstm'
+    model_name, ModelClass = models.get(choice, ('LSTM-RBM', LstmRbm))
     model_name = 'LSTM-RBM' if ModelClass == LstmRbm else 'RNN-RBM'
 
     print(f'Building {model_name}...')
