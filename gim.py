@@ -11,6 +11,7 @@ import numpy as np
 import torch
 from midi.utils import midiread, midiwrite
 from model import LstmRbm, RnnRbm
+from player import play_realtime
 
 CHECKPOINTS_DIR = 'checkpoints'
 OUTPUT_DIR = 'output'
@@ -151,7 +152,7 @@ if __name__ == '__main__':
         load_weights(model, DEFAULT_WEIGHTS)
 
     while True:
-        cmd = input('\n[train/generate/save/load/exit] > ').strip().lower()
+        cmd = input('\n[train/generate/play/save/load/exit] > ').strip().lower()
 
         if cmd == 'train':
             # Show available styles
@@ -210,6 +211,21 @@ if __name__ == '__main__':
         elif cmd == 'save':
             filename = input(f'Filename [{DEFAULT_WEIGHTS}]: ').strip() or DEFAULT_WEIGHTS
             save_weights(model, filename)
+
+        elif cmd == 'play':
+            print('  First run in another terminal:')
+            print('  fluidsynth -a coreaudio -m coremidi /opt/homebrew/share/fluid-synth/sf2/VintageDreamsWaves-v2.sf2\n')
+            try:
+                length = int(input('Length in steps [200]: ').strip() or '200')
+            except ValueError:
+                length = 200
+            try:
+                temp = float(input('Temperature [1.0]: ').strip() or '1.0')
+            except ValueError:
+                temp = 1.0
+            seed_str = input('Seed (Enter for random): ').strip()
+            seed = int(seed_str) if seed_str else None
+            play_realtime(model, length=length, temperature=temp, seed=seed, dt=dt, r=r)
 
         elif cmd == 'load':
             filename = input(f'Filename [{DEFAULT_WEIGHTS}]: ').strip() or DEFAULT_WEIGHTS
